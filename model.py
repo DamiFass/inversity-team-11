@@ -3,13 +3,15 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 from datetime import datetime
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn import metrics
-from sklearn import preprocessing
-from sklearn.metrics import confusion_matrix
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.model_selection import train_test_split
+# from sklearn import metrics
+# from sklearn import preprocessing
+# from sklearn.metrics import confusion_matrix
+
+# from utils.explore_data import compare_columns_day
 
 
 def plot_all_columns(df, timepoints, savepath=None):
@@ -67,6 +69,16 @@ def compute_turbine_status(df, threshold=10):
     df.loc[condition, "turbine_status"] = (
         0  # meaning that the turbine does work near theoretical power curve
     )
+    
+def compare_columns_day(df1, df2, df3, df4 ,col, sample_per_day, day):
+    fig, axis = plt.subplots(1, 1)
+    axis.plot(df1[col].values[sample_per_day*(day-1):sample_per_day*day])
+    axis.plot(df2[col].values[sample_per_day*(day-1):sample_per_day*day])
+    axis.plot(df3[col].values[sample_per_day*(day-1):sample_per_day*day])
+    axis.plot(df4[col].values[sample_per_day*(day-1):sample_per_day*day])
+    axis.set_ylabel(col)
+    # axis.legend()
+    plt.show()
 
 
 def main():
@@ -88,6 +100,11 @@ def main():
     df3 = df[(df.index >= time_ranges[2]) & (df.index < time_ranges[3])]
     df4 = df[(df.index >= time_ranges[3]) & (df.index <= time_ranges[4])]
 
+    col = df.columns.to_list()[0]
+    sample_per_day = int(df.shape[0]/365) 
+    day = 100
+    compare_columns_day(df1, df2, df3, df4 ,col, sample_per_day, day)
+
     timepoints = [dfi.index.values[0] for dfi in [df1, df2, df3, df4]]
     savepath = abspath / "figures"
     savepath.mkdir(exist_ok=True)
@@ -95,6 +112,8 @@ def main():
 
     #
     compute_turbine_status(df1)
+
+
 
     # plot_all_columns(df1)
 

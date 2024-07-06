@@ -1,2 +1,3 @@
 # inversity-team-11
-Project for inversity hackathon
+
+Project for inversity hackathon team 11
